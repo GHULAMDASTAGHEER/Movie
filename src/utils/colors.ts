@@ -15,13 +15,14 @@ export const Colors = {
   gray: '#666666',
   lightGray: '#B0B0B0',
   darkGray: '#333333',
+  border: '#E0E0E0',
   
   // Background Colors
   background: '#FFFFFF',
   surface: '#F5F5F5',
   
   // Text Colors
-  textPrimary: '#000000',
+  textPrimary: 'rgba(32, 44, 67, 1)',
   textSecondary: '#666666',
   textLight: '#B0B0B0',
   textWhite: '#FFFFFF',

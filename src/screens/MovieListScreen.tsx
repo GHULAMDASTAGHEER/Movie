@@ -9,13 +9,14 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import LinearGradient from 'react-native-linear-gradient';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
 import Image from '../components/Image';
 import { MovieAPI } from '../utils/api';
 import { Movie } from '../types/movie';
 import { Colors } from '../utils/colors';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
 const MovieListScreen: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -70,7 +71,7 @@ const MovieListScreen: React.FC = () => {
   };
 
   const handleSearchPress = () => {
-    (navigation as any).navigate('SearchStack');
+    (navigation as any).navigate('SearchScreen');
   };
 
   const renderMovieItem = ({ item }: { item: Movie }) => (
@@ -83,21 +84,24 @@ const MovieListScreen: React.FC = () => {
         source={{ uri: MovieAPI.getImageUrl(item.poster_path, ) }}
         style={styles.moviePoster}
       />
-      <View style={styles.movieTitleOverlay}>
+      <LinearGradient
+        colors={['transparent', 'rgba(0, 0, 0, 0.88)']}
+        style={styles.movieTitleOverlay}
+      >
         <Typography variant="h4" style={styles.movieTitle}>
           {item.title}
         </Typography>
-      </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
 
   const renderHeader = () => (
     <View style={styles.header}>
-      <Typography variant="body2" weight='bold' style={styles.title}>
+      <Typography variant="body1" weight='600' style={styles.title}>
         Watch
       </Typography>
       <TouchableOpacity onPress={handleSearchPress} style={styles.searchButton}>
-        <EvilIcons name="search" size={moderateScale(19)} color={Colors.black} />
+        <Fontisto name="search" size={moderateScale(15)} color={Colors.black} />
       </TouchableOpacity>
     </View>
   );
@@ -175,8 +179,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: Colors.overlay,
-    padding: moderateScale(16),
+    padding: moderateScale(10),
   },
   movieTitle: {
     color: Colors.textWhite,

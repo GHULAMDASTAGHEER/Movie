@@ -24,6 +24,7 @@ function WatchStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MovieList" component={MovieListScreen} />
+      <Stack.Screen name="SearchScreen" component={SearchScreen} />
       <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
       <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} />
@@ -35,7 +36,7 @@ function WatchStack() {
 function SearchStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="SearchScreen" component={SearchScreen} />
       <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
       <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} />
@@ -52,11 +53,12 @@ function MainTabs() {
         tabBarStyle: {
           backgroundColor: Colors.tabBackground,
           borderTopWidth: 0,
-          height: verticalScale(75),
-          paddingBottom: verticalScale(8),
-          paddingTop: verticalScale(8),
+          height: verticalScale(70),
+          // paddingBottom: verticalScale(5),
+          paddingTop: verticalScale(5),
           borderTopLeftRadius: moderateScale(27),
           borderTopRightRadius: moderateScale(27),
+          paddingHorizontal: scale(20),
         },
         tabBarActiveTintColor: Colors.tabActive,
         tabBarInactiveTintColor: Colors.tabInactive,
@@ -77,7 +79,7 @@ function MainTabs() {
         options={{
           tabBarLabel: 'Dashboard',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="grid-outline" size={moderateScale(22)} color={color} />
+            <Ionicons name="grid-outline" size={moderateScale(18)} color={color} />
           ),
         }}
       />
@@ -87,7 +89,7 @@ function MainTabs() {
         options={{
           tabBarLabel: 'Watch',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="play-circle" size={moderateScale(22)} color={color} />
+            <Ionicons name="play-circle" size={moderateScale(18)} color={color} />
           ),
         }}
       />
@@ -97,7 +99,7 @@ function MainTabs() {
         options={{
           tabBarLabel: 'Media Library',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="library" size={moderateScale(22)} color={color} />
+            <Ionicons name="library" size={moderateScale(18)} color={color} />
           ),
         }}
       />
@@ -107,7 +109,7 @@ function MainTabs() {
         options={{
           tabBarLabel: 'More',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="menu" size={moderateScale(22)} color={color} />
+            <Ionicons name="menu" size={moderateScale(18)} color={color} />
           ),
         }}
       />

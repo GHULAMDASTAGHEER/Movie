@@ -15,6 +15,8 @@ import Image from '../components/Image';
 import { MovieAPI } from '../utils/api';
 import { Movie } from '../types/movie';
 import { Fonts } from '../utils/fonts';
+import { Colors } from '../utils/colors';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SearchScreen: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -24,17 +26,82 @@ const SearchScreen: React.FC = () => {
   const navigation = useNavigation();
 
   const genres = [
-    { name: 'Comedies', emoji: '😄' },
-    { name: 'Crime', emoji: '🔍' },
-    { name: 'Family', emoji: '👨‍👩‍👧‍👦' },
-    { name: 'Documentaries', emoji: '📽️' },
-    { name: 'Dramas', emoji: '🎭' },
-    { name: 'Fantasy', emoji: '🧙‍♂️' },
-    { name: 'Holidays', emoji: '🎄' },
-    { name: 'Horror', emoji: '👻' },
-    { name: 'Sci-Fi', emoji: '🚀' },
-    { name: 'Thriller', emoji: '🔪' },
+    { 
+      name: 'Comedies', 
+      image: 'https://image.tmdb.org/t/p/w500/1M876Kp7lY6g3o3QNYzSrarxqbk.jpg',
+      color: '#4A90E2'
+    },
+    { 
+      name: 'Crime', 
+      image: 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3v0.jpg',
+      color: '#2C3E50'
+    },
+    { 
+      name: 'Family', 
+      image: 'https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+      color: '#E67E22'
+    },
+    { 
+      name: 'Documentaries', 
+      image: 'https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+      color: '#27AE60'
+    },
+    { 
+      name: 'Dramas', 
+      image: 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3v0.jpg',
+      color: '#8E44AD'
+    },
+    { 
+      name: 'Fantasy', 
+      image: 'https://image.tmdb.org/t/p/w500/1M876Kp7lY6g3o3QNYzSrarxqbk.jpg',
+      color: '#F39C12'
+    },
+    { 
+      name: 'Holidays', 
+      image: 'https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg',
+      color: '#E74C3C'
+    },
+    { 
+      name: 'Horror', 
+      image: 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3v0.jpg',
+      color: '#2C3E50'
+    },
+    { 
+      name: 'Sci-Fi', 
+      image: 'https://image.tmdb.org/t/p/w500/1M876Kp7lY6g3o3QNYzSrarxqbk.jpg',
+      color: '#3498DB'
+    },
+    { 
+      name: 'Thriller', 
+      image: 'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3v0.jpg',
+      color: '#E74C3C'
+    },
   ];
+
+  const getGenreName = (genreId: number) => {
+    const genreMap: { [key: number]: string } = {
+      28: 'Action',
+      12: 'Adventure',
+      16: 'Animation',
+      35: 'Comedy',
+      80: 'Crime',
+      99: 'Documentary',
+      18: 'Drama',
+      10751: 'Family',
+      14: 'Fantasy',
+      36: 'History',
+      27: 'Horror',
+      10402: 'Music',
+      9648: 'Mystery',
+      10749: 'Romance',
+      878: 'Sci-Fi',
+      10770: 'TV Movie',
+      53: 'Thriller',
+      10752: 'War',
+      37: 'Western'
+    };
+    return genreMap[genreId] || 'Movie';
+  };
 
   useEffect(() => {
     if (query.trim().length >= 2) {
@@ -78,20 +145,23 @@ const SearchScreen: React.FC = () => {
     <TouchableOpacity
       style={styles.resultItem}
       onPress={() => handleMoviePress(item)}
+      activeOpacity={0.7}
     >
       <Image
-        variant="poster"
         source={{ uri: MovieAPI.getImageUrl(item.poster_path, 'w200') }}
         style={styles.resultPoster}
       />
       <View style={styles.resultInfo}>
-        <Typography variant="h3" weight="bold" numberOfLines={2}>
+        <Typography variant="h4" weight="600" numberOfLines={1} style={styles.resultTitle}>
           {item.title}
         </Typography>
-        <Typography variant="body2" color="#666666">
-          {new Date(item.release_date).getFullYear()}
+        <Typography variant="body2" color={Colors.gray} style={styles.resultGenre}>
+          {item.genre_ids && item.genre_ids.length > 0 ? getGenreName(item.genre_ids[0]) : 'Movie'}
         </Typography>
       </View>
+      <TouchableOpacity style={styles.moreButton}>
+        <Ionicons name="ellipsis-horizontal" size={moderateScale(20)} color={Colors.primary} />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
@@ -101,15 +171,19 @@ const SearchScreen: React.FC = () => {
         {genres.map((genre, index) => (
           <TouchableOpacity
             key={index}
-            style={styles.genreCard}
+            style={[styles.genreCard, { backgroundColor: genre.color }]}
             onPress={() => handleGenrePress(genre.name)}
+            activeOpacity={0.8}
           >
-            <View style={styles.genreEmoji}>
-              <Typography variant="h2">{genre.emoji}</Typography>
+            <Image
+              source={{ uri: genre.image }}
+              style={styles.genreImage}
+            />
+            <View style={styles.genreOverlay}>
+              <Typography variant="body1" weight="600" style={styles.genreName}>
+                {genre.name}
+              </Typography>
             </View>
-            <Typography variant="body2" weight="600" style={styles.genreName}>
-              {genre.name}
-            </Typography>
           </TouchableOpacity>
         ))}
       </View>
@@ -144,14 +218,12 @@ const SearchScreen: React.FC = () => {
     if (results.length > 0) {
       return (
         <View style={styles.resultsContainer}>
-          <Typography variant="h3" weight="bold" style={styles.resultsTitle}>
-            {results.length} Results Found
-          </Typography>
           <FlatList
             data={results}
             renderItem={renderSearchResult}
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.resultsList}
           />
         </View>
       );
@@ -163,27 +235,36 @@ const SearchScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Q TV shows, movies and more"
-          placeholderTextColor="#666666"
-          value={query}
-          onChangeText={setQuery}
-          autoFocus
-        />
-        {query.length > 0 && (
-          <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-            <Typography variant="body1" color="#666666">✕</Typography>
-          </TouchableOpacity>
-        )}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={moderateScale(20)} color={Colors.gray} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="TV shows, movies and more"
+            placeholderTextColor={Colors.gray}
+            value={query}
+            onChangeText={setQuery}
+            autoFocus
+          />
+          {query.length > 0 && (
+            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+              <Ionicons name="close" size={moderateScale(20)} color={Colors.gray} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
-      <View style={styles.content}>
-        {query.length >= 2 && (
-          <Typography variant="h3" weight="bold" style={styles.topResultsTitle}>
-            Top Results
+      {query.length >= 2 && results.length > 0 && (
+        <View style={styles.resultsHeader}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={moderateScale(24)} color={Colors.textPrimary} />
+          </TouchableOpacity>
+          <Typography variant="h3" weight="600" style={styles.resultsCount}>
+            {results.length} Results Found
           </Typography>
-        )}
+        </View>
+      )}
+
+      <View style={styles.content}>
         {renderResults()}
       </View>
     </View>
@@ -193,56 +274,97 @@ const SearchScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.background,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: scale(16),
+    paddingHorizontal: scale(20),
     paddingTop: verticalScale(60),
     paddingBottom: verticalScale(20),
-    gap: scale(12),
+  },
+  resultsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(16),
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  backButton: {
+    marginRight: scale(16),
+    padding: moderateScale(4),
+  },
+  resultsCount: {
+    color: Colors.textPrimary,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderRadius: moderateScale(25),
+    paddingHorizontal: scale(16),
+    height: verticalScale(50),
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  searchIcon: {
+    marginRight: scale(12),
   },
   searchInput: {
     flex: 1,
-    height: verticalScale(44),
-    borderWidth: moderateScale(1),
-    borderColor: '#E0E0E0',
-    borderRadius: moderateScale(8),
-    paddingHorizontal: scale(16),
     fontSize: moderateScale(16),
     fontFamily: Fonts.regular,
+    color: Colors.textPrimary,
   },
   clearButton: {
-    padding: moderateScale(8),
+    padding: moderateScale(4),
   },
   content: {
     flex: 1,
-    paddingHorizontal: scale(16),
+    paddingHorizontal: scale(20),
   },
   topResultsTitle: {
     marginBottom: verticalScale(16),
-    color: '#000000',
+    color: Colors.textPrimary,
   },
   resultsContainer: {
     flex: 1,
   },
   resultsTitle: {
     marginBottom: verticalScale(16),
-    color: '#000000',
+    color: Colors.textPrimary,
   },
   resultItem: {
     flexDirection: 'row',
-    marginBottom: verticalScale(16),
     alignItems: 'center',
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(4),
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
   },
   resultPoster: {
-    width: scale(60),
-    height: verticalScale(90),
+    width: scale(50),
+    height: scale(50),
     marginRight: scale(12),
+    borderRadius: moderateScale(8),
   },
   resultInfo: {
     flex: 1,
+  },
+  resultTitle: {
+    color: Colors.textPrimary,
+    marginBottom: verticalScale(4),
+  },
+  resultGenre: {
+    fontSize: moderateScale(14),
+  },
+  moreButton: {
+    padding: moderateScale(8),
+  },
+  resultsList: {
+    paddingBottom: verticalScale(20),
   },
   genresContainer: {
     flex: 1,
@@ -250,23 +372,37 @@ const styles = StyleSheet.create({
   genresGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: scale(12),
+    justifyContent: 'space-between',
   },
   genreCard: {
-    width: '47%',
-    aspectRatio: 1.5,
-    backgroundColor: '#F8F8F8',
-    borderRadius: moderateScale(12),
+    width: '48%',
+    height: verticalScale(120),
+    borderRadius: moderateScale(16),
+    marginBottom: verticalScale(16),
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  genreImage: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+  },
+  genreOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    padding: moderateScale(12),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: verticalScale(12),
-  },
-  genreEmoji: {
-    marginBottom: verticalScale(8),
   },
   genreName: {
-    color: '#000000',
+    color: Colors.white,
     textAlign: 'center',
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   loadingContainer: {
     flex: 1,
@@ -275,7 +411,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: verticalScale(16),
-    color: '#666666',
+    color: Colors.gray,
   },
   noResultsContainer: {
     flex: 1,
@@ -284,7 +420,7 @@ const styles = StyleSheet.create({
   },
   noResultsText: {
     marginBottom: verticalScale(8),
-    color: '#000000',
+    color: Colors.textPrimary,
   },
 });
 
