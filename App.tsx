@@ -15,6 +15,7 @@ import SearchScreen from './src/screens/SearchScreen';
 import VideoPlayerScreen from './src/screens/VideoPlayerScreen';
 import SeatSelectionScreen from './src/screens/SeatSelectionScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
+import ComingSoonScreen from './src/screens/ComingSoonScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -72,7 +73,7 @@ function MainTabs() {
     >
       <Tab.Screen
         name="Dashboard"
-        component={WatchStack}
+        component={ComingSoonScreen}
         options={{
           tabBarLabel: 'Dashboard',
           tabBarIcon: ({ color, size }) => (
@@ -92,7 +93,7 @@ function MainTabs() {
       />
       <Tab.Screen
         name="MediaLibrary"
-        component={WatchStack}
+        component={ComingSoonScreen}
         options={{
           tabBarLabel: 'Media Library',
           tabBarIcon: ({ color, size }) => (
@@ -102,7 +103,7 @@ function MainTabs() {
       />
       <Tab.Screen
         name="More"
-        component={WatchStack}
+        component={ComingSoonScreen}
         options={{
           tabBarLabel: 'More',
           tabBarIcon: ({ color, size }) => (

@@ -3,7 +3,7 @@
   "data": [
     {
       "path": "src/assets/fonts/Poppins-Bold.ttf",
-      "sha1": "c5fc6a2a7632d804758cc5320c62c7646262a671"
+      "sha1": "45e4d582cbb4dab2bbad3f624fad9ae567c66547"
     },
     {
       "path": "src/assets/fonts/Poppins-Medium.ttf",
@@ -11,11 +11,11 @@
     },
     {
       "path": "src/assets/fonts/Poppins-Regular.ttf",
-      "sha1": "51cfb92b1b790e64ef984acbe2e36e2f1ae8c438"
+      "sha1": "86a425be5a919d86729b85b2bc1d07da5ce413d4"
     },
     {
       "path": "src/assets/fonts/Poppins-SemiBold.ttf",
-      "sha1": "8d679f4348f57ac02580612d4bdf481353387faf"
+      "sha1": "622ca6ccbe2f22c5611dffa016b745bd26be154c"
     },
     {
       "path": "node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",

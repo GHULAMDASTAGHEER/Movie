@@ -22,6 +22,3 @@ export const Fonts = {
     default: 'System',
   }),
 };
-
-// export default Fonts;
-// export { Fonts };

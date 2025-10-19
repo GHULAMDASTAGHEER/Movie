@@ -15,7 +15,7 @@ import Image from '../components/Image';
 import { MovieAPI } from '../utils/api';
 import { Movie } from '../types/movie';
 import { Colors } from '../utils/colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 const MovieListScreen: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -93,11 +93,11 @@ const MovieListScreen: React.FC = () => {
 
   const renderHeader = () => (
     <View style={styles.header}>
-      <Typography variant="body2" weight="bold" style={styles.title}>
+      <Typography variant="body2" weight='bold' style={styles.title}>
         Watch
       </Typography>
       <TouchableOpacity onPress={handleSearchPress} style={styles.searchButton}>
-        <Ionicons name="search" size={moderateScale(15)} color={Colors.black} />
+        <EvilIcons name="search" size={moderateScale(19)} color={Colors.black} />
       </TouchableOpacity>
     </View>
   );
@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: verticalScale(20),
     paddingTop: verticalScale(60),
+    backgroundColor:Colors.white
   },
   title: {
     color: Colors.textPrimary,
