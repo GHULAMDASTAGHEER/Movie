@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Movie Booking App
 
 A React Native movie booking application that lists upcoming movies using The Movie Database (TMDB) API and allows users to book movie tickets.
@@ -115,3 +116,6 @@ The app follows the provided Figma design with:
 - Blue accent color (#007AFF)
 - Purple navigation bar (#6B46C1)
 - Responsive layout for different screen sizes
+=======
+# Movie
+>>>>>>> 1bd2f50bea411afe95ec9fbe2ca171cc8bf1ccf2
