@@ -7,7 +7,7 @@ import { Colors } from '../utils/colors';
 interface TypographyProps extends TextProps {
   variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'body1' | 'body2' | 'caption' | 'subTitle';
   color?: string;
-  weight?: 'normal' | 'bold' | '600' | '700';
+  weight?: 'normal' | 'bold' | '600' | '500';
 }
 
 const Typography: React.FC<TypographyProps> = ({
@@ -45,7 +45,7 @@ const Typography: React.FC<TypographyProps> = ({
     switch (weight) {
       case 'bold': return Fonts.bold;
       case '600': return Fonts.semiBold;
-      case '700': return Fonts.bold;
+      case '500': return Fonts.medium;
       default: return Fonts.regular;
     }
   };

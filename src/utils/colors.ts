@@ -5,14 +5,14 @@ export const Colors = {
   primaryDark: '#311B92',
   
   // Secondary Colors
-  secondary: '#007AFF',
+  secondary: 'rgba(239, 239, 239, 1)',
   secondaryLight: '#4A9EFF',
   secondaryDark: '#0056CC',
   
   // Neutral Colors
   white: '#FFFFFF',
   black: '#000000',
-  gray: '#666666',
+  gray: '#202C434D',
   lightGray: '#B0B0B0',
   darkGray: '#333333',
   border: '#E0E0E0',
