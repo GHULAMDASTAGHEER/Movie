@@ -180,6 +180,7 @@ const PaymentScreen: React.FC = () => {
               fontFamily={Fonts.semiBold}
               backgroundColor={Colors.buttonPrimary}
               borderRadius={moderateScale(10)}
+               marginBottom={moderateScale(20)}
             />
           </View>
         </View>
@@ -266,6 +267,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(16),
     height:moderateScale(48),
     paddingVertical: verticalScale(4),
+     marginBottom:moderateScale(20)
   },
   screen: {
     width: moderateScale(200),

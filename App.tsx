@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar, StyleSheet, View, Text } from 'react-native';
@@ -40,10 +40,10 @@ function SearchStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="SearchScreen" component={SearchScreen} />
       <Stack.Screen name="GenreResults" component={GenreResultsScreen} />
-      <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
-      <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
-      <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} />
-      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+      {/* <Stack.Screen name="MovieDetail" component={MovieDetailScreen} /> */}
+      {/* <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} /> */}
+      {/* <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} /> */}
+      {/* <Stack.Screen name="PaymentScreen" component={PaymentScreen} /> */}
     </Stack.Navigator>
   );
 }
@@ -89,11 +89,27 @@ function MainTabs() {
       <Tab.Screen
         name="Watch"
         component={WatchStack}
-        options={{
-          tabBarLabel: 'Watch',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="play-circle" size={moderateScale(18)} color={color} />
-          ),
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route) ?? 'MovieList';
+          
+          // Hide tab bar on these screens
+          const hideTabBar = ['MovieDetail', 'SeatSelection', 'PaymentScreen', 'VideoPlayer'].includes(routeName);
+          
+          return {
+            tabBarLabel: 'Watch',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="play-circle" size={moderateScale(18)} color={color} />
+            ),
+            tabBarStyle: hideTabBar ? { display: 'none' } : {
+              backgroundColor: Colors.tabBackground,
+              borderTopWidth: 0,
+              height: verticalScale(70),
+              paddingTop: verticalScale(5),
+              borderTopLeftRadius: moderateScale(27),
+              borderTopRightRadius: moderateScale(27),
+              paddingHorizontal: scale(20),
+            },
+          };
         }}
       />
       <Tab.Screen

@@ -139,6 +139,7 @@ const SeatSelectionScreen: React.FC = () => {
           fontSize={moderateScale(14)}
           fontFamily={Fonts.semiBold}
           backgroundColor={Colors.buttonPrimary}
+          marginBottom={moderateScale(20)}
         />
       </View>
     </View>
