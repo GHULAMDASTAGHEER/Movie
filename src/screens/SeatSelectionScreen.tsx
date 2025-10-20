@@ -9,7 +9,12 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { Colors } from '../utils/colors';
 import { Movie } from '../types/movie';
+import { Image } from '../components';
+import { IMAGES } from '../assets';
+import { Fonts } from '../utils/fonts';
 
 interface RouteParams {
   movie: Movie;
@@ -27,7 +32,7 @@ interface Seat {
 const SeatSelectionScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState('5 Mar');
   const [selectedTime, setSelectedTime] = useState('12:30');
-  const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
+  const [selectedHall, setSelectedHall] = useState('Hall 1');
   const navigation = useNavigation();
   const route = useRoute();
   const { movie } = route.params as RouteParams;
@@ -35,158 +40,46 @@ const SeatSelectionScreen: React.FC = () => {
   const dates = ['5 Mar', '6 Mar', '7 Mar', '8 Mar', '9 Mar'];
   const timeSlots = [
     { time: '12:30', hall: 'Cinetech + Hall 1', price: 50 },
-    { time: '13:30', hall: 'Cinetech', price: 75 },
+    { time: '13:30', hall: 'Cinetech + Hall 1', price: 75 },
+    { time: '15:00', hall: 'Cinetech + Hall 2', price: 60 },
   ];
-
-  const generateSeats = (): Seat[] => {
-    const seats: Seat[] = [];
-    for (let row = 1; row <= 14; row++) {
-      const seatsPerRow = row <= 10 ? 8 : 6;
-      for (let seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
-        const seatType = row <= 3 ? 'vip' : 'regular';
-        const available = Math.random() > 0.3;
-        
-        seats.push({
-          id: `${row}-${seatNum}`,
-          row,
-          number: seatNum,
-          type: seatType,
-          available,
-          selected: false,
-        });
-      }
-    }
-    return seats;
-  };
-
-  const [seats] = useState<Seat[]>(generateSeats());
-
-  const handleSeatPress = (seat: Seat) => {
-    if (!seat.available) return;
-
-    setSelectedSeats(prev => {
-      const isSelected = prev.some(s => s.id === seat.id);
-      if (isSelected) {
-        return prev.filter(s => s.id !== seat.id);
-      } else {
-        return [...prev, { ...seat, selected: true }];
-      }
-    });
-  };
-
-  const removeSeat = (seatId: string) => {
-    setSelectedSeats(prev => prev.filter(s => s.id !== seatId));
-  };
-
-  const getTotalPrice = () => {
-    return selectedSeats.reduce((total, seat) => {
-      return total + (seat.type === 'vip' ? 150 : 50);
-    }, 0);
-  };
-
-  const handleProceedToPay = () => {
-    if (selectedSeats.length === 0) {
-      return;
-    }
-    (navigation as any).navigate('Payment', {
-      movie,
-      selectedSeats,
-      selectedDate,
-      selectedTime,
-      totalPrice: getTotalPrice(),
-    });
-  };
-
-  const getSeatStyle = (seat: Seat) => {
-    if (!seat.available) return styles.seatUnavailable;
-    if (selectedSeats.some(s => s.id === seat.id)) return styles.seatSelected;
-    if (seat.type === 'vip') return styles.seatVip;
-    return styles.seatRegular;
-  };
-
-  const renderSeatMap = () => {
-    const rows = Array.from({ length: 14 }, (_, i) => i + 1);
-    
-    return (
-      <View style={styles.seatMapContainer}>
-        <Typography variant="h3" weight="bold" style={styles.screenLabel}>
-          SCREEN
-        </Typography>
-        
-        {rows.map(row => {
-          const rowSeats = seats.filter(seat => seat.row === row);
-          return (
-            <View key={row} style={styles.seatRow}>
-              <Typography variant="body2" style={styles.rowLabel}>
-                {row}
-              </Typography>
-              <View style={styles.seatsContainer}>
-                {rowSeats.map(seat => (
-                  <TouchableOpacity
-                    key={seat.id}
-                    style={[styles.seat, getSeatStyle(seat)]}
-                    onPress={() => handleSeatPress(seat)}
-                  />
-                ))}
-              </View>
-            </View>
-          );
-        })}
-      </View>
-    );
-  };
-
-  const renderLegend = () => (
-    <View style={styles.legend}>
-      <View style={styles.legendItem}>
-        <View style={[styles.legendColor, styles.seatSelected]} />
-        <Typography variant="body2">Selected</Typography>
-      </View>
-      <View style={styles.legendItem}>
-        <View style={[styles.legendColor, styles.seatUnavailable]} />
-        <Typography variant="body2">Not available</Typography>
-      </View>
-      <View style={styles.legendItem}>
-        <View style={[styles.legendColor, styles.seatVip]} />
-        <Typography variant="body2">VIP (150$)</Typography>
-      </View>
-      <View style={styles.legendItem}>
-        <View style={[styles.legendColor, styles.seatRegular]} />
-        <Typography variant="body2">Regular (50$)</Typography>
-      </View>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Typography variant="h2" weight="bold" style={styles.title}>
-          {movie.title}
-        </Typography>
-        <Typography variant="body1" color="#666666">
-          March 5, 2021 | 12:30 Hall 1
-        </Typography>
+      <View style={styles.headerArea}>
+        <View style={styles.headerBar}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+            <MaterialIcons name="keyboard-arrow-left" size={moderateScale(26)} color={Colors.textPrimary} />
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Typography variant="body1" weight="500" style={styles.title}>{movie.title}</Typography>
+            <Typography variant="subTitle" weight='500' color={Colors.secondaryLight}>In Theaters December 22, 2021</Typography>
+          </View>
+          <View style={{ width: moderateScale(26) }} />
+        </View>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.dateSection}>
-          <Typography variant="h3" weight="bold" style={styles.sectionTitle}>
+          <Typography variant="body1" weight="500" style={styles.sectionTitle}>
             Date
           </Typography>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.datesContainer}>
-              {dates.map((date) => (
+              {dates?.map((date) => (
                 <TouchableOpacity
                   key={date}
                   style={[
                     styles.dateButton,
-                    selectedDate === date && styles.dateButtonSelected,
+                    selectedDate === date && { backgroundColor: Colors.buttonPrimary },
                   ]}
                   onPress={() => setSelectedDate(date)}
+                  activeOpacity={0.8}
                 >
                   <Typography
-                    variant="body1"
-                    color={selectedDate === date ? '#FFFFFF' : '#000000'}
+                    variant="subTitle"
+                    weight='600'
+                    color={selectedDate === date ? Colors.white : Colors.textPrimary}
+                    style={{top:moderateScale(1)}}
                   >
                     {date}
                   </Typography>
@@ -197,73 +90,57 @@ const SeatSelectionScreen: React.FC = () => {
         </View>
 
         <View style={styles.timeSection}>
-          <Typography variant="h3" weight="bold" style={styles.sectionTitle}>
-            Time
-          </Typography>
-          <View style={styles.timeSlots}>
-            {timeSlots.map((slot) => (
-              <TouchableOpacity
-                key={slot.time}
-                style={[
-                  styles.timeSlot,
-                  selectedTime === slot.time && styles.timeSlotSelected,
-                ]}
-                onPress={() => setSelectedTime(slot.time)}
-              >
-                <Typography variant="h3" weight="bold">
-                  {slot.time}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.timeSlotsRow}>
+              {timeSlots.map((slot) => (
+                <View style={{flexDirection: 'column',}}>
+                 <Typography variant="subTitle" weight='500' color={Colors.textPrimary}>
+                    {slot.time}  <Typography variant="subTitle" weight='500' color={Colors.gray20}>
+                   {slot.hall}
+                  </Typography>
                 </Typography>
-                <Typography variant="body2" color="#666666">
-                  {slot.hall}
-                </Typography>
-                <Typography variant="body2" color="#007AFF">
-                  From {slot.price}$ or {slot.price * 50} bonus
-                </Typography>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {renderSeatMap()}
-        {renderLegend()}
-
-        {selectedSeats.length > 0 && (
-          <View style={styles.selectedSeatsContainer}>
-            <Typography variant="h3" weight="bold" style={styles.sectionTitle}>
-              Selected Seats
-            </Typography>
-            {selectedSeats.map((seat) => (
-              <View key={seat.id} style={styles.selectedSeatItem}>
-                <Typography variant="body1">
-                  {seat.row}/{seat.number} row X
-                </Typography>
-                <TouchableOpacity onPress={() => removeSeat(seat.id)}>
-                  <Typography variant="body1" color="#FF0000">✕</Typography>
+                <TouchableOpacity
+                  key={slot.time}
+                  style={[styles.slotCard, selectedTime === slot.time && styles.slotCardSelected]}
+                  onPress={() => {
+                    setSelectedTime(slot.time);
+                    setSelectedHall(slot.hall);
+                  }}
+                  activeOpacity={0.9}
+                >
+                 <Image
+                 source={IMAGES.Seat}
+                 style={{width:moderateScale(144), height:moderateScale(113), alignSelf:'center'}}
+                 />
+                
                 </TouchableOpacity>
-              </View>
-            ))}
-            <View style={styles.totalContainer}>
-              <Typography variant="h3" weight="bold">
-                Total Price
-              </Typography>
-              <Typography variant="h3" weight="bold" color="#007AFF">
-                $ {getTotalPrice()}
-              </Typography>
+                <Typography variant="subTitle" weight='500' color={'#202C43'}
+                style={{marginTop:moderateScale(8)}}>
+                    From {slot.price}$ or {slot.price * 50} bonus
+                  </Typography>
+                </View>
+              ))}
             </View>
-          </View>
-        )}
+          </ScrollView>
+        </View>
       </ScrollView>
 
-      {selectedSeats.length > 0 && (
-        <View style={styles.bottomContainer}>
-          <Button
-            title="Proceed to pay"
-            onPress={handleProceedToPay}
-            variant="primary"
-            style={styles.proceedButton}
-          />
-        </View>
-      )}
+      <View style={styles.bottomContainer}>
+        <Button
+          label={'Select Seats'}
+          onPress={() => navigation.navigate('PaymentScreen', {
+            movie,
+            selectedSeats: [],
+            selectedDate,
+            selectedTime,
+            selectedHall,
+            totalPrice: 0,
+          })}
+          fontSize={moderateScale(14)}
+          fontFamily={Fonts.semiBold}
+          backgroundColor={Colors.buttonPrimary}
+        />
+      </View>
     </View>
   );
 };
@@ -273,24 +150,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  header: {
-    paddingHorizontal: scale(16),
-    paddingTop: verticalScale(60),
-    paddingBottom: verticalScale(20),
+  headerArea: {
+    paddingTop: verticalScale(48),
+    paddingBottom: verticalScale(12),
+    paddingHorizontal: scale(14),
+    backgroundColor: Colors.background,
+  },
+  headerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backBtn: {
+    width: moderateScale(26),
+    height: moderateScale(26),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerCenter: {
+    alignItems: 'center',
+    top:moderateScale(10)
   },
   title: {
-    color: '#000000',
-    marginBottom: 4,
+    color: Colors.textPrimary,
+    // marginBottom: moderateScale(2)
   },
   content: {
     flex: 1,
     paddingHorizontal: scale(16),
+    marginTop:moderateScale(70)
   },
   dateSection: {
     marginBottom: verticalScale(24),
   },
   sectionTitle: {
-    marginBottom: verticalScale(12),
+    marginBottom: verticalScale(8),
     color: '#000000',
   },
   datesContainer: {
@@ -298,116 +192,47 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   dateButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#F0F0F0',
+    paddingHorizontal: moderateScale(14),
+    paddingVertical: moderateScale(4),
+    borderRadius: moderateScale(8),
+    backgroundColor: Colors.gray30,
   },
   dateButtonSelected: {
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.buttonPrimary,
   },
   timeSection: {
     marginBottom: 32,
   },
-  timeSlots: {
+  timeSlotsRow: {
+    flexDirection: 'row',
     gap: 12,
   },
-  timeSlot: {
+  slotCard: {
+    width: moderateScale(245),
     padding: 16,
-    borderRadius: 12,
-    backgroundColor: '#F8F8F8',
+    borderRadius: moderateScale(10),
     borderWidth: 1,
     borderColor: '#E0E0E0',
+    marginTop: moderateScale(5),
   },
-  timeSlotSelected: {
-    borderColor: '#007AFF',
-    backgroundColor: '#F0F8FF',
+  slotCardSelected: {
+    borderColor: '#61C3F2',
   },
-  seatMapContainer: {
-    marginBottom: 24,
+  slotPreview: {
+    marginVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#CFE8FF',
+    padding: 8,
+    backgroundColor: '#FAFDFF',
   },
-  screenLabel: {
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#666666',
-  },
-  seatRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  rowLabel: {
-    width: 30,
-    textAlign: 'center',
-    marginRight: 12,
-  },
-  seatsContainer: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  seat: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    marginHorizontal: 2,
-  },
-  seatRegular: {
-    backgroundColor: '#87CEEB',
-  },
-  seatVip: {
-    backgroundColor: '#6B46C1',
-  },
-  seatSelected: {
-    backgroundColor: '#FFD700',
-  },
-  seatUnavailable: {
-    backgroundColor: '#CCCCCC',
-  },
-  legend: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-    marginBottom: 24,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  legendColor: {
-    width: 16,
-    height: 16,
-    borderRadius: 2,
-  },
-  selectedSeatsContainer: {
-    marginBottom: 24,
-  },
-  selectedSeatItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  totalContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 16,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+  miniMapContainer: {
+    alignSelf: 'stretch',
   },
   bottomContainer: {
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  proceedButton: {
-    width: '100%',
+    backgroundColor: Colors.background,
   },
 });
 

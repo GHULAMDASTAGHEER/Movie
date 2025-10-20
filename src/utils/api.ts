@@ -36,6 +36,17 @@ export class MovieAPI {
     return this.fetchFromAPI<UpcomingMoviesResponse>(`/search/movie?query=${encodeURIComponent(query)}&page=${page}`);
   }
 
+  static async discoverMovies(params: { with_genres?: number; page?: number }): Promise<UpcomingMoviesResponse> {
+    const queryParams = new URLSearchParams();
+    if (params.with_genres) {
+      queryParams.append('with_genres', params.with_genres.toString());
+    }
+    if (params.page) {
+      queryParams.append('page', params.page.toString());
+    }
+    return this.fetchFromAPI<UpcomingMoviesResponse>(`/discover/movie?${queryParams.toString()}`);
+  }
+
   static getImageUrl(path: string, size: 'w200' | 'w300' | 'w500' | 'w780' | 'original' = 'w500'): string {
     return `https://image.tmdb.org/t/p/${size}${path}`;
   }

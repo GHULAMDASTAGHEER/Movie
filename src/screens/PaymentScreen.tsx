@@ -2,19 +2,27 @@ import React, { useState } from 'react';
 import {
   View,
   ScrollView,
+  TouchableOpacity,
   StyleSheet,
   Alert,
+  Image,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { Colors } from '../utils/colors';
 import { Movie, Seat } from '../types/movie';
+import { IMAGES } from '../assets';
+import { Fonts } from '../utils/fonts';
 
 interface RouteParams {
   movie: Movie;
   selectedSeats: Seat[];
   selectedDate: string;
   selectedTime: string;
+  selectedHall: string;
   totalPrice: number;
 }
 
@@ -22,7 +30,49 @@ const PaymentScreen: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const navigation = useNavigation();
   const route = useRoute();
-  const { movie, selectedSeats, selectedDate, selectedTime, totalPrice } = route.params as RouteParams;
+  
+  // Safe parameter extraction with fallbacks
+  const params = route.params as RouteParams || {};
+  const {
+    movie = { title: 'Unknown Movie' },
+    selectedSeats = [],
+    selectedDate = 'Unknown Date',
+    selectedTime = 'Unknown Time',
+    selectedHall = 'Unknown Hall',
+    totalPrice = 0
+  } = params;
+
+  // Format date: "5 Mar" -> "March 5, 2021"
+  const formatDate = (date: string) => {
+    const months: { [key: string]: string } = {
+      'Mar': 'March',
+      'Apr': 'April',
+      'May': 'May',
+      'Jun': 'June',
+      'Jul': 'July',
+      'Aug': 'August',
+      'Sep': 'September',
+      'Oct': 'October',
+      'Nov': 'November',
+      'Dec': 'December',
+    };
+    
+    const parts = date.split(' ');
+    if (parts.length === 2) {
+      const day = parts[0];
+      const month = months[parts[1]] || parts[1];
+      return `${month} ${day}, 2021`;
+    }
+    return date;
+  };
+
+  // Format hall: "Cinetech + Hall 1" -> "hall 1"
+  const formatHall = (hall: string) => {
+    const match = hall.match(/Hall (\d+)/i);
+    return match ? `hall ${match[1]}` : hall.toLowerCase();
+  };
+
+  const formattedHeaderDate = `${formatDate(selectedDate)}  I  ${selectedTime} ${formatHall(selectedHall)}`;
 
   const handlePayment = async () => {
     setProcessing(true);
@@ -43,125 +93,88 @@ const PaymentScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Typography variant="h2" weight="bold" style={styles.title}>
-          Payment
-        </Typography>
+    <View style={styles.container}>
+      <View style={styles.headerArea}>
+        <View style={styles.headerBar}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+            <MaterialIcons name="keyboard-arrow-left" size={moderateScale(26)} color={Colors.textPrimary} />
+          </TouchableOpacity>
+          <View style={styles.headerCenter}>
+            <Typography variant="body1" weight="500" style={styles.title}>{movie.title}</Typography>
+            <Typography variant="subTitle" weight='500' color={Colors.secondaryLight}>{formattedHeaderDate}</Typography>
+          </View>
+          <View style={{ width: moderateScale(26) }} />
+        </View>
       </View>
 
       <View style={styles.content}>
-        <View style={styles.movieInfo}>
-          <Typography variant="h3" weight="bold" style={styles.movieTitle}>
-            {movie.title}
-          </Typography>
-          <Typography variant="body1" color="#666666">
-            {selectedDate} | {selectedTime}
-          </Typography>
-        </View>
-
-        <View style={styles.seatsInfo}>
-          <Typography variant="h3" weight="bold" style={styles.sectionTitle}>
-            Selected Seats
-          </Typography>
-          {selectedSeats.map((seat) => (
-            <View key={seat.id} style={styles.seatItem}>
-              <Typography variant="body1">
-                Row {seat.row}, Seat {seat.number} - {seat.type.toUpperCase()}
-              </Typography>
-              <Typography variant="body1" weight="bold">
-                ${seat.type === 'vip' ? '150' : '50'}
-              </Typography>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.totalContainer}>
-          <Typography variant="h2" weight="bold">
-            Total: ${totalPrice}
-          </Typography>
-        </View>
-
-        <View style={styles.paymentSection}>
-          <Typography variant="h3" weight="bold" style={styles.sectionTitle}>
-            Payment Method
-          </Typography>
-          <View style={styles.paymentMethod}>
-            <Typography variant="body1">💳 Credit Card ending in 1234</Typography>
-          </View>
-        </View>
-
-        <Button
-          title={processing ? 'Processing...' : 'Complete Payment'}
-          onPress={handlePayment}
-          variant="primary"
-          disabled={processing}
-          style={styles.paymentButton}
+        <Image
+        source={IMAGES.Count}
+        style={{width:moderateScale(6), height:moderateScale(149) ,top:moderateScale(45)}}
+        />
+         <Image
+        source={IMAGES.SeatSelected}
+        style={{width:moderateScale(328), height:moderateScale(190)}}
         />
       </View>
-    </ScrollView>
+
+     
+
+      <View style={styles.bottomContainer}>
+        <Button
+          label={processing ? 'Processing...' : 'Complete Payment'}
+          onPress={handlePayment}
+          disabled={processing}
+        fontSize={moderateScale(14)}
+                  fontFamily={Fonts.semiBold}
+                  backgroundColor={Colors.buttonPrimary}
+        />
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.background,
   },
-  header: {
-    paddingHorizontal: 16,
-    paddingTop: 60,
-    paddingBottom: 20,
+  headerArea: {
+    paddingTop: verticalScale(48),
+    paddingBottom: verticalScale(12),
+    paddingHorizontal: scale(14),
+    backgroundColor: Colors.background,
+  },
+  headerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backBtn: {
+    width: moderateScale(26),
+    height: moderateScale(26),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerCenter: {
+    alignItems: 'center',
+    top: moderateScale(10),
   },
   title: {
-    color: '#000000',
+    color: Colors.textPrimary,
   },
   content: {
+    flex: 1,
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(80),
+    flexDirection:'row',
+    gap:moderateScale(10)
+  },
+  
+  bottomContainer: {
     paddingHorizontal: 16,
-  },
-  movieInfo: {
-    marginBottom: 32,
-  },
-  movieTitle: {
-    color: '#000000',
-    marginBottom: 8,
-  },
-  seatsInfo: {
-    marginBottom: 32,
-  },
-  sectionTitle: {
-    marginBottom: 16,
-    color: '#000000',
-  },
-  seatItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  totalContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingVertical: 16,
-    borderTopWidth: 2,
-    borderTopColor: '#E0E0E0',
-    borderBottomWidth: 2,
-    borderBottomColor: '#E0E0E0',
-    marginBottom: 32,
-  },
-  paymentSection: {
-    marginBottom: 32,
-  },
-  paymentMethod: {
-    padding: 16,
-    backgroundColor: '#F8F8F8',
-    borderRadius: 8,
-  },
-  paymentButton: {
-    marginBottom: 32,
+    backgroundColor: Colors.background,
   },
 });
 

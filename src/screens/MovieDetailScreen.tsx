@@ -5,6 +5,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
@@ -13,6 +15,10 @@ import Button from '../components/Button';
 import Image from '../components/Image';
 import { MovieAPI } from '../utils/api';
 import { Movie, MovieDetails, MovieVideo } from '../types/movie';
+import { Colors } from '../utils/colors';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { IMAGES } from '../assets';
+import { Fonts } from '../utils/fonts';
 
 interface RouteParams {
   movie: Movie;
@@ -55,7 +61,7 @@ const MovieDetailScreen: React.FC = () => {
   const handleWatchTrailer = () => {
     if (trailer) {
       (navigation as any).navigate('VideoPlayer', { 
-        videoKey: trailer.key,
+        movieId: movie.id,
         movieTitle: movie.title 
       });
     } else {
@@ -76,6 +82,11 @@ const MovieDetailScreen: React.FC = () => {
     });
   };
 
+  const getGenreColor = (index: number) => {
+    const colors = ['#20B2AA', '#FF69B4', '#9370DB', '#FFD700'];
+    return colors[index % colors.length];
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -94,80 +105,98 @@ const MovieDetailScreen: React.FC = () => {
           Movie details not found
         </Typography>
         <Button
-          title="Go Back"
+          label="Go Back"
           onPress={() => navigation.goBack()}
-          style={styles.backButton}
+          // style={styles.backButton}
         />
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Typography variant="h2" weight="bold" style={styles.title}>
-          Watch
-        </Typography>
-      </View>
-
-      <View style={styles.posterContainer}>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      
+      <View style={styles.posterSection}>
         <Image
-          variant="backdrop"
           source={{ uri: MovieAPI.getImageUrl(movieDetails.backdrop_path, 'original') }}
           style={styles.poster}
         />
-      </View>
-
-      <View style={styles.content}>
-        <Typography variant="h1" weight="bold" style={styles.movieTitle}>
-          {movieDetails.title}
-        </Typography>
         
-        <Typography variant="body1" color="#666666" style={styles.releaseDate}>
-          In Theaters {formatDate(movieDetails.release_date)}
-        </Typography>
+        <View style={styles.posterOverlay}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} >
+              <MaterialIcons name="keyboard-arrow-left" size={moderateScale(30)} color={Colors.white} />
+            </TouchableOpacity>
+            <Typography variant="body1" weight="500" style={styles.headerTitle}>
+              Watch
+            </Typography>
+            <View style={styles.headerSpacer} />
+          </View>
 
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Get Tickets"
-            onPress={handleGetTickets}
-            variant="primary"
-            style={styles.primaryButton}
-          />
-          <Button
-            title="Watch Trailer"
-            onPress={handleWatchTrailer}
-            variant="outline"
-            style={styles.secondaryButton}
-            disabled={!trailer}
-          />
-        </View>
+          <View style={styles.movieInfo}>
+            {/* <Typography variant="h1" weight="bold" style={styles.movieTitle}>
+              {movieDetails.title}
+            </Typography> */}
+            <Image source={IMAGES.MovieDetail} style={{height:scale(30), width:scale(102)}} />
+            
+            <Typography variant="body1" weight='500' color={Colors.white} style={styles.releaseDate}>
+              In Theaters {formatDate(movieDetails.release_date)}
+            </Typography>
 
-        <View style={styles.genresContainer}>
-          <Typography variant="h3" weight="bold" style={styles.sectionTitle}>
-            Genres
-          </Typography>
-          <View style={styles.genres}>
-            {movieDetails.genres.map((genre) => (
-              <View key={genre.id} style={styles.genreTag}>
-                <Typography variant="body2" color="#007AFF">
-                  {genre.name}
-                </Typography>
-              </View>
-            ))}
+            <View style={styles.buttonContainer}>
+              <Button
+                label="Get Tickets"
+                onPress={handleGetTickets}
+                backgroundColor={Colors.buttonPrimary}
+                fontSize={moderateScale(14)}
+                fontFamily={Fonts.semiBold}
+                width={'70%'}
+              />
+              <Button
+                label="Watch Trailer"
+                onPress={handleWatchTrailer}
+                backgroundColor={'transparent'}
+                fontSize={moderateScale(14)}
+                fontFamily={Fonts.semiBold}
+                width={'70%'}
+                borderWidth={1}
+                borderColor={Colors.buttonPrimary}
+                color={Colors.white}
+              />
+            </View>
           </View>
         </View>
-
-        <View style={styles.overviewContainer}>
-          <Typography variant="h3" weight="bold" style={styles.sectionTitle}>
-            Overview
-          </Typography>
-          <Typography variant="body1" style={styles.overview}>
-            {movieDetails.overview}
-          </Typography>
-        </View>
       </View>
-    </ScrollView>
+
+      <ScrollView style={styles.contentSection} showsVerticalScrollIndicator={false}>
+        <View style={styles.content}>
+          <View style={styles.genresContainer}>
+            <Typography variant="body1" weight="500" style={styles.sectionTitle}>
+              Genres
+            </Typography>
+            <View style={styles.genres}>
+              {movieDetails.genres.map((genre, index) => (
+                <View key={genre.id} style={[styles.genreTag, { backgroundColor: getGenreColor(index) }]}>
+                  <Typography variant="subTitle" color={Colors.white} weight="600" numberOfLines={1}>
+                    {genre.name}
+                  </Typography>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.overviewContainer}>
+            <Typography variant="body1" weight="500" style={styles.sectionTitle}>
+              Overview
+            </Typography>
+            <Typography variant="subTitle" style={styles.overview}>
+              {movieDetails.overview}
+            </Typography>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -176,49 +205,111 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  header: {
-    paddingHorizontal: scale(16),
-    paddingTop: verticalScale(60),
-    paddingBottom: verticalScale(20),
-  },
-  title: {
-    color: '#000000',
-  },
-  posterContainer: {
-    paddingHorizontal: scale(16),
-    marginBottom: verticalScale(20),
+  posterSection: {
+    height: verticalScale(360),
+    position: 'relative',
   },
   poster: {
     width: '100%',
-    height: verticalScale(250),
+    height: '100%',
+    resizeMode: 'cover',
   },
-  content: {
+  posterOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'space-between',
+    paddingTop: verticalScale(50),
+    paddingBottom: verticalScale(50),
     paddingHorizontal: scale(16),
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width:'50%'
+  },
+  backButton: {
+    width: scale(40),
+    height: scale(40),
+    borderRadius: scale(20),
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    color: Colors.white,
+    marginTop:scale(2)
+  },
+  headerSpacer: {
+    width: scale(40),
+  },
+  movieInfo: {
+    alignItems: 'center',
+  },
   movieTitle: {
-    color: '#000000',
+    color: '#FFD700',
+    fontSize: moderateScale(28),
+    textAlign: 'center',
     marginBottom: verticalScale(8),
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   releaseDate: {
-    marginBottom: verticalScale(24),
+    fontSize: moderateScale(16),
+    marginBottom: verticalScale(10),
+    textAlign: 'center',
   },
   buttonContainer: {
-    flexDirection: 'row',
-    gap: scale(12),
-    marginBottom: verticalScale(32),
+    flexDirection: 'column',
+    gap: verticalScale(12),
+    width: '100%',
   },
   primaryButton: {
-    flex: 1,
+    backgroundColor: '#4A9EFF',
+    borderRadius: moderateScale(8),
+    paddingVertical: verticalScale(14),
   },
   secondaryButton: {
+    backgroundColor: 'transparent',
+    borderWidth: moderateScale(1),
+    borderColor: '#4A9EFF',
+    borderRadius: moderateScale(8),
+    paddingVertical: verticalScale(14),
+  },
+  contentSection: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
+  },
+  content: {
+    paddingHorizontal: scale(20),
+    paddingTop: verticalScale(20),
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    gap: scale(8),
+    marginBottom: verticalScale(24),
+  },
+  ratingBadge: {
+    width: scale(40),
+    height: scale(40),
+    borderRadius: scale(20),
+    backgroundColor: '#333333',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   genresContainer: {
     marginBottom: verticalScale(32),
   },
   sectionTitle: {
-    color: '#000000',
-    marginBottom: verticalScale(12),
+    color: Colors.textPrimary,
+    marginBottom: verticalScale(10),
   },
   genres: {
     flexDirection: 'row',
@@ -226,17 +317,18 @@ const styles = StyleSheet.create({
     gap: scale(8),
   },
   genreTag: {
-    backgroundColor: '#F0F0F0',
-    paddingHorizontal: scale(12),
-    paddingVertical: verticalScale(6),
-    borderRadius: moderateScale(16),
+    width: scale(60),
+    height: scale(24),
+    borderRadius: moderateScale(50),
+    alignItems:'center',
+    justifyContent:'center',
   },
   overviewContainer: {
     marginBottom: verticalScale(32),
   },
   overview: {
-    lineHeight: verticalScale(24),
-    color: '#333333',
+    lineHeight: verticalScale(17),
+    color: Colors.gray20,
   },
   loadingContainer: {
     flex: 1,
@@ -259,9 +351,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: verticalScale(24),
     color: '#FF0000',
-  },
-  backButton: {
-    minWidth: scale(120),
   },
 });
 
