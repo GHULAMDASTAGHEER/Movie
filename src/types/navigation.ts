@@ -11,6 +11,7 @@ export type RootStackParamList = {
     totalPrice: number; 
   };
   Search: undefined;
+  GenreResults: { genre: string };
 };
 
 export type TabParamList = {

@@ -12,6 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MovieListScreen from './src/screens/MovieListScreen';
 import MovieDetailScreen from './src/screens/MovieDetailScreen';
 import SearchScreen from './src/screens/SearchScreen';
+import GenreResultsScreen from './src/screens/GenreResultsScreen';
 import VideoPlayerScreen from './src/screens/VideoPlayerScreen';
 import SeatSelectionScreen from './src/screens/SeatSelectionScreen';
 import PaymentScreen from './src/screens/PaymentScreen';
@@ -25,6 +26,7 @@ function WatchStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MovieList" component={MovieListScreen} />
       <Stack.Screen name="SearchScreen" component={SearchScreen} />
+      <Stack.Screen name="GenreResults" component={GenreResultsScreen} />
       <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
       <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} />
@@ -37,6 +39,7 @@ function SearchStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="SearchScreen" component={SearchScreen} />
+      <Stack.Screen name="GenreResults" component={GenreResultsScreen} />
       <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
       <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} />

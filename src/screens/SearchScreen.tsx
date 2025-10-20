@@ -135,8 +135,7 @@ const SearchScreen: React.FC = () => {
   };
 
   const handleGenrePress = (genre: string) => {
-    setQuery(genre);
-    Keyboard.dismiss();
+    (navigation as any).navigate('GenreResults', { genre });
   };
 
   const clearSearch = () => {
