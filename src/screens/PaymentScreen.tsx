@@ -15,6 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Colors } from '../utils/colors';
 import { Movie, Seat } from '../types/movie';
 import { IMAGES } from '../assets';
+import { Fonts } from '../utils/fonts';
 
 interface RouteParams {
   movie: Movie;
@@ -124,7 +125,9 @@ const PaymentScreen: React.FC = () => {
           label={processing ? 'Processing...' : 'Complete Payment'}
           onPress={handlePayment}
           disabled={processing}
-          backgroundColor={Colors.buttonPrimary}
+        fontSize={moderateScale(14)}
+                  fontFamily={Fonts.semiBold}
+                  backgroundColor={Colors.buttonPrimary}
         />
       </View>
     </View>
@@ -134,7 +137,7 @@ const PaymentScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.background,
   },
   headerArea: {
     paddingTop: verticalScale(48),
@@ -171,9 +174,7 @@ const styles = StyleSheet.create({
   bottomContainer: {
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    backgroundColor: Colors.background,
   },
 });
 

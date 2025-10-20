@@ -14,6 +14,7 @@ import { Colors } from '../utils/colors';
 import { Movie } from '../types/movie';
 import { Image } from '../components';
 import { IMAGES } from '../assets';
+import { Fonts } from '../utils/fonts';
 
 interface RouteParams {
   movie: Movie;
@@ -135,6 +136,8 @@ const SeatSelectionScreen: React.FC = () => {
             selectedHall,
             totalPrice: 0,
           })}
+          fontSize={moderateScale(14)}
+          fontFamily={Fonts.semiBold}
           backgroundColor={Colors.buttonPrimary}
         />
       </View>
@@ -229,9 +232,7 @@ const styles = StyleSheet.create({
   bottomContainer: {
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    backgroundColor: Colors.background,
   },
 });
 
