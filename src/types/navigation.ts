@@ -3,12 +3,13 @@ export type RootStackParamList = {
   MovieDetail: { movie: any };
   VideoPlayer: { videoKey: string; movieTitle: string };
   SeatSelection: { movie: any };
-  Payment: { 
+  PaymentScreen: { 
     movie: any; 
     selectedSeats: any[]; 
     selectedDate: string; 
     selectedTime: string; 
     totalPrice: number; 
+    selectedHall: string; 
   };
   Search: undefined;
   GenreResults: { genre: string };

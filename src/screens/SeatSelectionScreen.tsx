@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   ScrollView,
@@ -12,6 +12,8 @@ import Button from '../components/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Colors } from '../utils/colors';
 import { Movie } from '../types/movie';
+import { Image } from '../components';
+import { IMAGES } from '../assets';
 
 interface RouteParams {
   movie: Movie;
@@ -29,6 +31,7 @@ interface Seat {
 const SeatSelectionScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState('5 Mar');
   const [selectedTime, setSelectedTime] = useState('12:30');
+  const [selectedHall, setSelectedHall] = useState('Hall 1');
   const navigation = useNavigation();
   const route = useRoute();
   const { movie } = route.params as RouteParams;
@@ -39,57 +42,6 @@ const SeatSelectionScreen: React.FC = () => {
     { time: '13:30', hall: 'Cinetech + Hall 1', price: 75 },
     { time: '15:00', hall: 'Cinetech + Hall 2', price: 60 },
   ];
-
-  const generateSeats = (): Seat[] => {
-    const seats: Seat[] = [];
-    for (let row = 1; row <= 14; row++) {
-      const seatsPerRow = row <= 10 ? 8 : 6;
-      for (let seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
-        const seatType = row <= 3 ? 'vip' : 'regular';
-        const available = Math.random() > 0.3;
-        
-        seats.push({
-          id: `${row}-${seatNum}`,
-          row,
-          number: seatNum,
-          type: seatType,
-          available,
-          selected: false,
-        });
-      }
-    }
-    return seats;
-  };
-
-  // const [seats] = useState<Seat[]>(generateSeats());
-
-  const miniPreview = useMemo(() => {
-    // Build a tiny 8x5 preview map just for the time-slot card
-    const rows = 5;
-    const perRow = 8;
-    return Array.from({ length: rows }, (_, r) =>
-      Array.from({ length: perRow }, (_, c) => (r + c) % 4 === 0 ? 'u' : 'a')
-    );
-  }, []);
-
-
-
-
-  const renderSeatMini = () => (
-    <View style={styles.miniMapContainer}>
-      {miniPreview.map((row, idx) => (
-        <View key={idx} style={styles.miniRow}>
-          {row.map((cell, i) => (
-            <View
-              key={i}
-              style={[styles.miniSeat, cell === 'u' ? styles.miniUnavailable : styles.miniAvailable]}
-            />
-          ))}
-        </View>
-      ))}
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <View style={styles.headerArea}>
@@ -140,20 +92,32 @@ const SeatSelectionScreen: React.FC = () => {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.timeSlotsRow}>
               {timeSlots.map((slot) => (
+                <View style={{flexDirection: 'column',}}>
+                 <Typography variant="subTitle" weight='500' color={Colors.textPrimary}>
+                    {slot.time}  <Typography variant="subTitle" weight='500' color={Colors.gray20}>
+                   {slot.hall}
+                  </Typography>
+                </Typography>
                 <TouchableOpacity
                   key={slot.time}
                   style={[styles.slotCard, selectedTime === slot.time && styles.slotCardSelected]}
-                  onPress={() => setSelectedTime(slot.time)}
+                  onPress={() => {
+                    setSelectedTime(slot.time);
+                    setSelectedHall(slot.hall);
+                  }}
                   activeOpacity={0.9}
                 >
-                  <Typography variant="body2" color={Colors.textSecondary}>
-                    {slot.time}   {slot.hall}
-                  </Typography>
-                  <View style={styles.slotPreview}>{renderSeatMini()}</View>
-                  <Typography variant="body2" color={Colors.secondaryLight}>
+                 <Image
+                 source={IMAGES.Seat}
+                 style={{width:moderateScale(144), height:moderateScale(113), alignSelf:'center'}}
+                 />
+                
+                </TouchableOpacity>
+                <Typography variant="subTitle" weight='500' color={'#202C43'}
+                style={{marginTop:moderateScale(8)}}>
                     From {slot.price}$ or {slot.price * 50} bonus
                   </Typography>
-                </TouchableOpacity>
+                </View>
               ))}
             </View>
           </ScrollView>
@@ -163,7 +127,14 @@ const SeatSelectionScreen: React.FC = () => {
       <View style={styles.bottomContainer}>
         <Button
           label={'Select Seats'}
-          onPress={() => navigation.navigate('PaymentScreen')}
+          onPress={() => navigation.navigate('PaymentScreen', {
+            movie,
+            selectedSeats: [],
+            selectedDate,
+            selectedTime,
+            selectedHall,
+            totalPrice: 0,
+          })}
           backgroundColor={Colors.buttonPrimary}
         />
       </View>
@@ -234,17 +205,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   slotCard: {
-    width: scale(280),
+    width: moderateScale(245),
     padding: 16,
-    borderRadius: 12,
-    backgroundColor: '#F8F8F8',
+    borderRadius: moderateScale(10),
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    marginRight: scale(12),
+    marginTop: moderateScale(5),
   },
   slotCardSelected: {
     borderColor: '#61C3F2',
-    backgroundColor: '#F0F8FF',
   },
   slotPreview: {
     marginVertical: 10,
@@ -256,99 +225,6 @@ const styles = StyleSheet.create({
   },
   miniMapContainer: {
     alignSelf: 'stretch',
-  },
-  miniRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  miniSeat: {
-    width: 8,
-    height: 8,
-    borderRadius: 2,
-    marginHorizontal: 2,
-  },
-  miniAvailable: {
-    backgroundColor: '#87CEEB',
-  },
-  miniUnavailable: {
-    backgroundColor: '#DADADA',
-  },
-  seatMapContainer: {
-    marginBottom: 24,
-  },
-  screenLabel: {
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#666666',
-  },
-  seatRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  rowLabel: {
-    width: 30,
-    textAlign: 'center',
-    marginRight: 12,
-  },
-  seatsContainer: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  seat: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    marginHorizontal: 2,
-  },
-  seatRegular: {
-    backgroundColor: '#87CEEB',
-  },
-  seatVip: {
-    backgroundColor: '#6B46C1',
-  },
-  seatSelected: {
-    backgroundColor: '#FFD700',
-  },
-  seatUnavailable: {
-    backgroundColor: '#CCCCCC',
-  },
-  legend: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-    marginBottom: 24,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  legendColor: {
-    width: 16,
-    height: 16,
-    borderRadius: 2,
-  },
-  selectedSeatsContainer: {
-    marginBottom: 24,
-  },
-  selectedSeatItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  totalContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 16,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
   },
   bottomContainer: {
     paddingHorizontal: 16,

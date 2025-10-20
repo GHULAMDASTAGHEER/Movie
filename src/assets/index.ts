@@ -12,4 +12,7 @@ export const IMAGES = {
   SciFi: require("./images/scifri.png") as ImageSourcePropType,
   Thriller: require("./images/thriller.png") as ImageSourcePropType,
   MovieDetail: require("./images/moviedetail.png") as ImageSourcePropType,
+  Seat: require("./images/seathall.png") as ImageSourcePropType,
+  SeatSelected: require("./images/seats.png") as ImageSourcePropType,
+  Count: require("./images/count.png") as ImageSourcePropType,
 } as const;

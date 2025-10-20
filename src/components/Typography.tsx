@@ -32,15 +32,6 @@ const Typography: React.FC<TypographyProps> = ({
     }
   };
 
-  // const getFontWeight = () => {
-  //   switch (weight) {
-  //     case 'bold': return 'bold';
-  //     case '600': return '600';
-  //     case '700': return '700';
-  //     default: return 'normal';
-  //   }
-  // };
-
   const getFontFamily = () => {
     switch (weight) {
       case 'bold': return Fonts.bold;
