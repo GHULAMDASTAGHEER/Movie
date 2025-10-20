@@ -30,7 +30,7 @@ function WatchStack() {
       <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
       <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} />
-      <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
     </Stack.Navigator>
   );
 }
@@ -43,7 +43,7 @@ function SearchStack() {
       <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
       <Stack.Screen name="SeatSelection" component={SeatSelectionScreen} />
-      <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
     </Stack.Navigator>
   );
 }

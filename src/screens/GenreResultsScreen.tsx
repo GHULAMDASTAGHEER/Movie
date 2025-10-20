@@ -107,7 +107,7 @@ const GenreResultsScreen: React.FC = () => {
         <Typography variant="body1" weight="500" numberOfLines={1} style={styles.resultTitle}>
           {item.title}
         </Typography>
-        <Typography variant="caption" color={Colors.gray} style={styles.resultGenre}>
+        <Typography variant="caption" color={Colors.gray10} style={styles.resultGenre}>
           {item.genre_ids && item.genre_ids.length > 0 ? getGenreName(item.genre_ids[0]) : 'Movie'}
         </Typography>
       </View>
@@ -164,16 +164,16 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: scale(20),
     paddingTop: verticalScale(50),
     paddingBottom: verticalScale(16),
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
-    width:'50%'
+    width:'90%',
+    alignSelf:'center'
   },
   backButton: {
-    marginRight: scale(16),
-    padding: moderateScale(4),
+    marginRight: scale(10),
+    // padding: moderateScale(4),
   },
   resultsCount: {
     color: Colors.textPrimary,

@@ -1,105 +1,92 @@
-import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import React, { FC } from 'react';
+import { StyleProp, TextStyle, ViewStyle, Pressable, Text, ActivityIndicator } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import Typography from './Typography';
 import { Colors } from '../utils/colors';
+import { Fonts } from '../utils/fonts';
 
-interface ButtonProps {
-  title: string;
-  onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'small' | 'medium' | 'large';
+interface iProps {
+  label: string;
+  loading?: boolean;
+  onPress?: () => void;
+  borderColor?: string;
   disabled?: boolean;
-  style?: ViewStyle;
+  activityIndicatorColor?: string;
+  translationEnabled?: boolean;
+  backgroundColor?: string;
+  borderWidth?: number;
+  fontSize?: number;
+  color?: string;
+  fontFamily?: string;
+  paddingVertical?: number;
+  paddingHorizontal?: number;
+  lineHeight?: number;
 }
 
-const Button: React.FC<ButtonProps> = ({
-  title,
+const CustomButton: FC<iProps & TextStyle & StyleProp<ViewStyle>> = ({
   onPress,
-  variant = 'primary',
-  size = 'medium',
-  disabled = false,
-  style,
+  label,
+  backgroundColor,
+  borderWidth,
+  borderColor,
+  width,
+  height,
+  alignSelf,
+  borderRadius,
+  marginTop,
+  marginBottom,
+  marginRight,
+  marginLeft,
+  fontSize,
+  color,
+  fontFamily,
+  loading,
+  disabled,
+  translationEnabled = true,
+  paddingVertical,
+  paddingHorizontal,
+  lineHeight,
 }) => {
-  const getButtonStyle = (): ViewStyle => {
-    const baseStyle: ViewStyle = {
-      borderRadius: moderateScale(8),
-      alignItems: 'center',
-      justifyContent: 'center',
-    };
-
-    switch (variant) {
-      case 'primary':
-        return {
-          ...baseStyle,
-          backgroundColor: disabled ? Colors.lightGray : Colors.secondary,
-        };
-      case 'secondary':
-        return {
-          ...baseStyle,
-          backgroundColor: disabled ? Colors.lightGray : Colors.primary,
-        };
-      case 'outline':
-        return {
-          ...baseStyle,
-          backgroundColor: 'transparent',
-          borderWidth: moderateScale(1),
-          borderColor: disabled ? Colors.lightGray : Colors.secondary,
-        };
-      default:
-        return baseStyle;
-    }
-  };
-
-  const getSizeStyle = (): ViewStyle => {
-    switch (size) {
-      case 'small':
-        return { 
-          paddingVertical: verticalScale(8), 
-          paddingHorizontal: scale(16) 
-        };
-      case 'large':
-        return { 
-          paddingVertical: verticalScale(16), 
-          paddingHorizontal: scale(24) 
-        };
-      default:
-        return { 
-          paddingVertical: verticalScale(12), 
-          paddingHorizontal: scale(20) 
-        };
-    }
-  };
-
-  const getTextColor = (): string => {
-    if (disabled) return Colors.gray;
-    if (variant === 'outline') return Colors.secondary;
-    return Colors.textWhite;
-  };
-
   return (
-    <TouchableOpacity
-      style={[getButtonStyle(), getSizeStyle(), style]}
-      onPress={onPress}
-      disabled={disabled}
-      activeOpacity={0.8}
+    <Pressable
+      onPress={disabled || loading ? undefined : onPress}
+      disabled={disabled || !onPress || loading}
+      style={({ pressed }) => ({
+        backgroundColor: disabled ? Colors?.gray : backgroundColor || Colors?.primary,
+        borderWidth: borderWidth,
+        borderColor: borderColor || Colors?.white,
+        width: width || '100%',
+        height: height || 50,
+        alignSelf: alignSelf || 'center',
+        marginRight: marginRight,
+        marginTop: marginTop,
+        marginLeft: marginLeft,
+        marginBottom: marginBottom,
+        borderRadius: borderRadius || 10,
+        paddingHorizontal: paddingHorizontal || moderateScale(16),
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: pressed ? 0.8 : 1,
+      })}
     >
-      <Typography
-        variant="body1"
-        color={getTextColor()}
-        weight="600"
-        style={styles.buttonText}
-      >
-        {title}
-      </Typography>
-    </TouchableOpacity>
+      {loading ? (
+        <ActivityIndicator color={color || Colors?.white} />
+      ) : (
+        <Text
+          maxFontSizeMultiplier={1}
+          style={{
+            fontSize: fontSize || moderateScale(16),
+            color: color || Colors?.white,
+            fontFamily: fontFamily || Fonts.bold,
+            lineHeight: lineHeight,
+            top:moderateScale(2),
+          }}
+        >
+          {label}
+        </Text>
+      )}
+    </Pressable>
   );
 };
 
-const styles = StyleSheet.create({
-  buttonText: {
-    textAlign: 'center',
-  },
-});
+export default CustomButton;
 
-export default Button;

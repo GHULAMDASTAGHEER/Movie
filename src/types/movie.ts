@@ -96,3 +96,9 @@ export interface MovieVideosResponse {
   id: number;
   results: MovieVideo[];
 }
+
+export interface Seat {
+  row: number;
+  seat: number;
+}
+  

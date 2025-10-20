@@ -155,15 +155,15 @@ const SearchScreen: React.FC = () => {
         style={styles.resultPoster}
       />
       <View style={styles.resultInfo}>
-        <Typography variant="h4" weight="600" numberOfLines={1} style={styles.resultTitle}>
+        <Typography variant="body1" weight="500" numberOfLines={1} style={styles.resultTitle}>
           {item.title}
         </Typography>
-        <Typography variant="body2" color={Colors.gray} style={styles.resultGenre}>
+        <Typography variant="body2" color={Colors.gray10} style={styles.resultGenre}>
           {item.genre_ids && item.genre_ids.length > 0 ? getGenreName(item.genre_ids[0]) : 'Movie'}
         </Typography>
       </View>
       <TouchableOpacity style={styles.moreButton}>
-        <Ionicons name="ellipsis-horizontal" size={moderateScale(20)} color={Colors.primary} />
+        <Ionicons name="ellipsis-horizontal" size={moderateScale(20)} color={'#61C3F2'} />
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -247,13 +247,15 @@ const SearchScreen: React.FC = () => {
       </View>
 
       {query.length >= 2 && results.length > 0 && (
+        <View style={{paddingHorizontal:scale(20)}}>
         <View style={styles.resultsHeader}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          {/* <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={moderateScale(24)} color={Colors.textPrimary} />
-          </TouchableOpacity>
-          <Typography variant="h3" weight="600" style={styles.resultsCount}>
-            {results.length} Results Found
+          </TouchableOpacity> */}
+          <Typography variant="caption" weight="500" style={styles.resultsCount}>
+             Top Results
           </Typography>
+        </View>
         </View>
       )}
     </>
@@ -315,8 +317,7 @@ const styles = StyleSheet.create({
   resultsHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    // paddingHorizontal: scale(10),
-    paddingVertical: verticalScale(16),
+    paddingVertical: verticalScale(5),
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
@@ -372,17 +373,17 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.border,
   },
   resultPoster: {
-    width: scale(50),
-    height: scale(50),
-    marginRight: scale(12),
-    borderRadius: moderateScale(8),
+    width: '38%',
+    height: scale(90),
+    marginRight: scale(16),
+    borderRadius: moderateScale(10),
   },
   resultInfo: {
     flex: 1,
   },
   resultTitle: {
     color: Colors.textPrimary,
-    marginBottom: verticalScale(4),
+    marginBottom: verticalScale(2),
   },
   resultGenre: {
     fontSize: moderateScale(14),

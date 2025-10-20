@@ -11,4 +11,5 @@ export const IMAGES = {
   Horror: require("./images/horror.png") as ImageSourcePropType,
   SciFi: require("./images/scifri.png") as ImageSourcePropType,
   Thriller: require("./images/thriller.png") as ImageSourcePropType,
+  MovieDetail: require("./images/moviedetail.png") as ImageSourcePropType,
 } as const;

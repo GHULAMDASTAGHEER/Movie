@@ -15,6 +15,7 @@ interface RouteParams {
   selectedSeats: Seat[];
   selectedDate: string;
   selectedTime: string;
+  selectedHall: string;
   totalPrice: number;
 }
 
@@ -22,7 +23,17 @@ const PaymentScreen: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const navigation = useNavigation();
   const route = useRoute();
-  const { movie, selectedSeats, selectedDate, selectedTime, totalPrice } = route.params as RouteParams;
+  
+  // Safe parameter extraction with fallbacks
+  const params = route.params as RouteParams || {};
+  const {
+    movie = { title: 'Unknown Movie' },
+    selectedSeats = [],
+    selectedDate = 'Unknown Date',
+    selectedTime = 'Unknown Time',
+    selectedHall = 'Unknown Hall',
+    totalPrice = 0
+  } = params;
 
   const handlePayment = async () => {
     setProcessing(true);
@@ -56,7 +67,7 @@ const PaymentScreen: React.FC = () => {
             {movie.title}
           </Typography>
           <Typography variant="body1" color="#666666">
-            {selectedDate} | {selectedTime}
+            {selectedDate} | {selectedTime} | {selectedHall}
           </Typography>
         </View>
 
@@ -64,16 +75,22 @@ const PaymentScreen: React.FC = () => {
           <Typography variant="h3" weight="bold" style={styles.sectionTitle}>
             Selected Seats
           </Typography>
-          {selectedSeats.map((seat) => (
-            <View key={seat.id} style={styles.seatItem}>
-              <Typography variant="body1">
-                Row {seat.row}, Seat {seat.number} - {seat.type.toUpperCase()}
-              </Typography>
-              <Typography variant="body1" weight="bold">
-                ${seat.type === 'vip' ? '150' : '50'}
-              </Typography>
-            </View>
-          ))}
+          {selectedSeats && selectedSeats.length > 0 ? (
+            selectedSeats.map((seat) => (
+              <View key={seat.id} style={styles.seatItem}>
+                <Typography variant="body1">
+                  Row {seat.row}, Seat {seat.number} - {seat.type.toUpperCase()}
+                </Typography>
+                <Typography variant="body1" weight="bold">
+                  ${seat.type === 'vip' ? '150' : '50'}
+                </Typography>
+              </View>
+            ))
+          ) : (
+            <Typography variant="body1" color="#666666">
+              No seats selected
+            </Typography>
+          )}
         </View>
 
         <View style={styles.totalContainer}>
@@ -92,11 +109,9 @@ const PaymentScreen: React.FC = () => {
         </View>
 
         <Button
-          title={processing ? 'Processing...' : 'Complete Payment'}
+          label={processing ? 'Processing...' : 'Complete Payment'}
           onPress={handlePayment}
-          variant="primary"
           disabled={processing}
-          style={styles.paymentButton}
         />
       </View>
     </ScrollView>
@@ -159,9 +174,6 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#F8F8F8',
     borderRadius: 8,
-  },
-  paymentButton: {
-    marginBottom: 32,
   },
 });
 
